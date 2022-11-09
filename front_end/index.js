@@ -4,7 +4,7 @@ import { abi, contractAddress } from "./constants.js"
 const connectButton = document.getElementById("connectButton")
 connectButton.onclick = connect
 const pryntButton = document.getElementById("pryntButton")
-pryntButton.onclick = prynt
+pryntButton.onclick = checkCerts
 const addButton = document.getElementById("addButton")
 addButton.onclick = addCert
 
@@ -47,8 +47,10 @@ async function addCert(){
     const signer = provider.getSigner()
     const signer_address = signer.getAddress(this)
     const contract = new ethers.Contract(contractAddress, abi, signer)
+    const nonce = await provider.getTransactionCount(contractAddress)
+    const anticipatedAddress = ethers.utils.getContractAddress({from: contractAddress, nonce})
     try {
-      const transactionResponse = await contract.addCertificate(".getAddress(this)", date, "second", signer_address, "third", "fourth", "hashx0", {
+      const transactionResponse = await contract.addCertificate(anticipatedAddress, date, "second", signer_address, "third", "fourth", "hashx0", {
           value: ethers.utils.parseEther(ethAmount)},)
       await listenForTransactionMine(transactionResponse, provider)
     } catch (error) {
